@@ -1,0 +1,66 @@
+#+TITLE: Introducción a Ratpack
+#+AUTHOR: Miguel
+
+* Outline
+
+** Introducción
+** ¿Qué es Ratpack?
+** ¿Cuándo usar Ratpack?
+** Scripting con Ratpack
+*** Grab
+*** Run
+*** Primer handler
+*** Profit :D
+** Groovy Ratpack DSL
+*** Handlers (endpoints)
+**** Método HTTP
+**** Basic render
+**** URL params
+**** GET, POST, PUT, DEL params
+**** Forms
+**** Uploading file?
+**** Json rendering
+**** Builders
+**** Groovy Templates
+*** Assets
+** Creciendo con Ratpack
+*** Gradle con Lazybones
+*** Testing
+*** Inyección de dependencias
+** Handler y Context
+** API java
+
+* Ideas
+
+  - API influenced by netty
+
+* Handlers
+
+  - Function that acts on handling a context
+
+    #+BEGIN_SRC groovy
+      import ratpack.handling.Handler;
+      import ratpack.handling.Context;
+      
+      public class HelloWorld implements Handler {
+        public void handle(Context context) {
+            context.getResponse().send("Hello world!");
+        }
+      }
+    #+END_SRC
+
+  - =HandlerFactory= creates the first handler, effectively the
+    application
+  - Handler != endpoint
+  - Delegate to other handlers
+  - A handler can be whatever you want:
+    - Middleware (like "filter" in grails)
+    - Routing point
+  - You can build a pipeline composing handlers
+  - The elevation of Ratpack being
+
+* Context
+
+  - Core
+  - Access Request&Response
+  - Delegation&Flow control
