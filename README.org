@@ -5,7 +5,28 @@
 
 ** Introducción
 ** ¿Qué es Ratpack?
+
+   - Toolkit para crear aplicaciones web
+   - Basado en Netty
+     - Non-blocking I/O framework
+     - Async IO
+   - Toolkit != framework, no toma decisiones por ti
+   - Optimizado para groovy y Java8
+   - Fácil y agradable de usar
+   - No es una aplicación con Java Servlets
+   - No se despliega en un servidor de aplicaciones Java; son
+     aplicaciones autocontenidas
+     
+   - Intenta hacer sencillo desarrollar aplicaciones simples, y no
+     ser obstrusivo cuando éstas se compliquen
+
 ** ¿Cuándo usar Ratpack?
+
+   - No-framework
+   - Prototipado
+   - Scripting
+   - Microservicios
+
 ** Scripting con Ratpack
 *** Grab
 *** Run
@@ -19,7 +40,7 @@
 **** GET, POST, PUT, DEL params
 **** Forms
 **** Uploading file?
-**** Json rendering
+**** Json rendering (as example?)
 **** Builders
 **** Groovy Templates
 *** Assets
