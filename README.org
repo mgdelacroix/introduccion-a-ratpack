@@ -16,7 +16,7 @@
    - No es una aplicación con Java Servlets
    - No se despliega en un servidor de aplicaciones Java; son
      aplicaciones autocontenidas
-     
+   - Aplicación standard corre en ~30Mb de memoria
    - Intenta hacer sencillo desarrollar aplicaciones simples, y no
      ser obstrusivo cuando éstas se compliquen
 
@@ -33,27 +33,143 @@
 *** Primer handler
 *** Profit :D
 ** Groovy Ratpack DSL
-*** Handlers (endpoints)
+*** Handlers
 **** Método HTTP
 **** Basic render
 **** URL params
+
+     #+BEGIN_SRC groovy
+       get("update/:id") {
+           def id = pathTokens.asLong('id')
+       }
+     #+END_SRC
+
 **** GET, POST, PUT, DEL params
 **** Forms
 **** Uploading file?
 **** Json rendering (as example?)
 **** Builders
 **** Groovy Templates
+
+     #+BEGIN_SRC groovy
+       get {
+           render groovyTemplate("index.html", ['myModel': 'as a map'])
+       }
+     #+END_SRC
+
 *** Assets
 ** Creciendo con Ratpack
 *** Gradle con Lazybones
+**** Configuración (dentro de gradle o fuera?)
 *** Testing
+
+    - No está ligado a ningún framework
+    - Se recomienda usar Spock
+    - El plugin de gradle =ratpack-groovy= se encarga de prepararnos
+      el proyecto para testing
+
 *** Inyección de dependencias
+*** Modulos
 ** Handler y Context
 ** API java
+** Deploy
+
+   - Tarea de gradle, =./gradlew distZip=
+   - Obtenemos un .zip
+   - Descomprimimos y ejecutamos el script de shell de la carpeta
+     =bin=
+   - Solo necesitamos tener Java instalado y permisos para ejecutar
+     scripts de shell
+
+** Por qué aun no es 1.0
+
+   - Soporte para WebSockets
+   - Integración con =Reactor= o =RXJava= (asynchronous composition
+     using a reactive pattern)
 
 * Ideas
 
   - API influenced by netty
+  - ByMethod
+
+    #+BEGIN_SRC groovy
+      handler("create") {
+          // some common code (TEST FIRST!)
+          def id = 35
+          byMethod {
+              get {
+                  // do stuff
+              }
+              post {
+                  // do stuff
+              }
+          }
+      }
+    #+END_SRC
+
+  - Parse system
+
+    #+BEGIN_SRC groovy
+      import static ratpack.form.Forms.form
+      
+      def form = parse form()
+    #+END_SRC
+
+  - Client error
+
+    #+BEGIN_SRC groovy
+      get {
+          clientError(404)
+      }
+    #+END_SRC
+
+  - Redirect
+
+    #+BEGIN_SRC groovy
+      get {
+          redirect '/newIndex'
+      }
+    #+END_SRC
+
+  - Prefix to sepparate stuff
+
+    #+BEGIN_SRC groovy
+      prefix('api') {
+          // some json handlers
+      }
+    #+END_SRC
+
+  - Jackson for doing JSON
+
+    #+BEGIN_SRC groovy
+      import ratpack.jackson.JacksonModule
+      import static ratpack.jackson.Jackson.json
+      import static ratpack.jackson.Jackson.jsonNode
+      
+      get {
+          render json(stuff)
+      }
+      
+      post {
+          def myInstance = parse jsonNode()
+      }
+    #+END_SRC
+
+  - Request method
+
+    #+BEGIN_SRC groovy
+      if (request.method.post) { println "it's a post!" }
+    #+END_SRC
+
+  - Blocking IO
+
+    #+BEGIN_SRC groovy
+      background {
+          Book.get(35)
+      } then { Book book ->
+          render book
+      }
+    #+END_SRC
 
 * Handlers
 
