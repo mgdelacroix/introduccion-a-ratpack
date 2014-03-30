@@ -10,12 +10,14 @@
    - Basado en Netty
      - Non-blocking I/O framework
      - Async IO
-   - Toolkit != framework, no toma decisiones por ti
-   - Optimizado para groovy y Java8
-   - Fácil y agradable de usar
    - No es una aplicación con Java Servlets
    - No se despliega en un servidor de aplicaciones Java; son
      aplicaciones autocontenidas
+   - Se puede desplegar como war
+   - Core implementado en Java
+   - Toolkit != framework, no toma decisiones por ti
+   - Optimizado para groovy y Java8
+   - Fácil y agradable de usar
    - Aplicación standard corre en ~30Mb de memoria
    - Intenta hacer sencillo desarrollar aplicaciones simples, y no
      ser obstrusivo cuando éstas se compliquen
@@ -29,7 +31,26 @@
 
 ** Scripting con Ratpack
 *** Grab
+
+    #+BEGIN_SRC groovy
+      @Grab("io.ratpack:ratpack-groovy:0.9.2")
+      import static ratpack.groovy.Groovy.*
+    #+END_SRC
+
+*** DSL básica
+
+    #+BEGIN_SRC groovy
+      ratpack {
+          handlers { }
+      }
+    #+END_SRC
+
 *** Run
+
+    #+BEGIN_SRC shell-script
+      groovy mi_script.groovy
+    #+END_SRC
+
 *** Primer handler
 *** Profit :D
 ** Groovy Ratpack DSL
@@ -45,6 +66,13 @@
      #+END_SRC
 
 **** GET, POST, PUT, DEL params
+
+     - GET query params
+
+       #+BEGIN_SRC groovy
+         request.queryParams
+       #+END_SRC
+
 **** Forms
 **** Uploading file?
 **** Json rendering (as example?)
@@ -61,6 +89,10 @@
 ** Creciendo con Ratpack
 *** Gradle con Lazybones
 **** Configuración (dentro de gradle o fuera?)
+
+     - HandlerFactory
+     - LaunchConfig
+
 *** Testing
 
     - No está ligado a ningún framework
