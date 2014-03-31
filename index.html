@@ -40,34 +40,6 @@
         <section data-background="ratpack.jpeg">
         </section>
 
-        <section>
-          <section>
-            <p>Foto sofá</p>
-          </section>
-
-          <section>
-            <p>Foto petición Laura</p>
-          </section>
-
-          <section>
-            <img class="stretch" src="php_logo.png" />
-
-            <aside class="notes">
-              Introducir lógica pequeña rápidamente y desplegarla de forma sencilla y ligera.
-            </aside>
-          </section>
-
-          <section>
-            <img class="stretch" src="groovy_logo.png" />
-          </section>
-
-          <section>
-            <img class="stretch" src="internet_husband.jpg" />
-          </section>
-        </section>
-
-
-
 		<section>
 		  <h1>Introducción a Ratpack</h1>
 		  <h3>Toolkit para desarrollo web</h3>
@@ -124,9 +96,9 @@
           <section>
             <h2>¿Cuándo usar Grails?</h2>
             <ul>
+              <li>Persistencia out-of-the-box</li>
               <li>Modelo muy amplio con muchos endpoints</li>
               <li>Necesidad de Spring Security</li>
-              <li>Persistencia out-of-the-box</li>
             </ul>
           </section>
         </section>
@@ -193,7 +165,7 @@
 
             <pre><code class="stretch">
   get {
-      def name = context.request.queryParams.name
+      def name = request.queryParams.name
       render "Hi $name!"
   }
             </code></pre>
@@ -208,7 +180,7 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
 
             <pre><code class="stretch">
   get('name/:name') {
-      def name = context.pathTokens.name
+      def name = pathTokens.name
       render "Hi $name, this time from PathTokens!"
   }
             </code></pre>
@@ -223,7 +195,7 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
 
             <pre><code class="stretch">
   post('name/:name?') {
-      def name = context.pathTokens.name
+      def name = pathTokens.name
       render "Hi $name, this time from PathTokens and a POST endpoint!"
   }
             </code></pre>
@@ -263,7 +235,7 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
             <h2>Form</h2>
 
             <pre><code class="stretch">
-  import ratpack.form.Forms
+  import ratpack.form.Form
 
   post('myform') {
       def form = parse Form
@@ -284,8 +256,11 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
   import static groovy.json.JsonOutput.toJson
 
   get {
-      context.response.contentType 'application/json'
+      response.contentType 'application/json'
       render toJson(['message': 'Long live to Json!'])
+  }
+  get('simpler') {
+      response.send 'application/json', toJson(['even': 'simpler'])
   }
             </code></pre>
 
@@ -301,16 +276,40 @@ Podemos usar <code>curl -i http://localhost:5050</code> para probar este endpoin
   handler('myendpoint') {
       byMethod {
           get {
-              context.response.contentType 'application/json'
-              render toJson(['method': 'GET'])
+              response.send 'application/json', toJson(['method': 'GET'])
           }
           post {
-              context.response.contentType 'application/json'
-              render toJson(['method': 'POST'])
+              response.send 'application/json', toJson(['method': 'POST'])
           }
       }
   }
             </code></pre>
+          </section>
+
+          <section>
+            <h2>byContent</h2>
+
+            <pre><code class="stretch">
+  get {
+      byContent {
+          json {
+              render 'JSON'
+          }
+          plainText {
+              render 'TEXT'
+          }
+          html {
+              render 'HTML'
+          }
+      }
+  }
+            </code></pre>
+
+            <aside class="notes">
+<code>curl -i -H "Accept: application/json" http://localhost:5050/</code><br />
+<code>curl -i -H "Accept: text/plain" http://localhost:5050/</code><br />
+<code>curl -i -H "Accept: text/html" http://localhost:5050/</code>
+            </aside>
           </section>
 
           <section>
@@ -861,7 +860,6 @@ TestHttpClient es un cliente HTTP simple.
 		<section>
 		  <h1>Gracias :D</h1>
 		</section>
-
 	  </div>
 
 	</div>
