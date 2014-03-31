@@ -407,6 +407,22 @@ Tener preparado un poco qué es <code>HandlerFactory</code>.
           </section>
 
           <section>
+            <h2>Tareas de gradle</h2>
+
+            <pre><code class="stretch">
+  # Genera la estructura de la aplicación
+  # en build/install/$applicationName
+  gradle installApp
+
+  # Comprime la aplicación en un fichero .zip
+  gradle distZip
+
+  # Comprime la aplicación en un fichero .tar
+  gradle distTar
+            </code></pre>
+          </section>
+
+          <section>
             <h3>Aplicación</h3>
             <h2>Carpeta app</h2>
 
@@ -433,33 +449,115 @@ Tener preparado un poco qué es <code>HandlerFactory</code>.
               <li><code>"${applicationName}.jar"</code></li>
             </ul>
           </section>
-
-          <section>
-            <h2>Tareas de gradle</h2>
-
-            <pre><code class="stretch">
-  # Genera la estructura de la aplicación en build/install/$applicationName
-  gradle installApp
-
-  # Comprime la aplicación en un fichero .zip
-  gradle distZip
-
-  # Comprime la aplicación en un fichero .tar
-  gradle distTar
-            </code></pre>
-          </section>
         </section>
 
         <section>
           <section>
             <h1>Ratpack internals</h1>
+          </section>
+
+          <section>
+            <h2>Warning!</h2>
+            <p>Hay poca documentación en "prosa".</p>
+            <p>Javadoc es tu amigo.</p>
+          </section>
+
+          <section>
+            <h2>Handler</h2>
             <ul>
-              <li>Handler</li>
-              <li>Context</li>
-              <li>Chain</li>
+              <li>Unidad de procesamiento en Ratpack</li>
+              <li>El punto de entrada de la aplicación es un <code>Handler</code></li>
+              <li>Interfaz a implementar</li>
+              <li>Reciben un contexto</li>
             </ul>
           </section>
+
+          <section>
+            <h2>Ejemplo de Handler</h2>
+
+            <pre><code class="stretch">
+  import ratpack.handling.Handler
+  import ratpack.handling.Context
+
+  class TestHandler implements Handler {
+      void handle(Context context) {
+          context.render "Hello World!"
+      }
+  }
+            </pre></code>
+          </section>
+
+          <section>
+            <h2>Se pueden encadenar</h2>
+            <pre><code class="stretch">
+  get 'chain', new FirstHandler()
+
+  class FirstHandler implements Handler {
+      void handle(Context context) {
+          println 'Soy el primer handler'
+          context.insert new SecondHandler()
+      }
+  }
+
+  class SecondHandler implements Handler {
+      void handle(Context context) {
+          println 'Soy el segundo handler'
+          context.render 'Response!'
+      }
+  }
+
+  // == Output GET /chain ==
+  // Soy el primer handler
+  // Soy el segundo handler
+  // [200] Response!
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Si ningún handler envía un response...</h2>
+            <p>El último handler es siempre uno interno que envía un 404</p>
+
+            <pre><code class="stretch">
+  context.clientError 404
+            </code></pre>
+          </section>
+
+          <section>
+            <h2>Context</h2>
+
+            <ul>
+              <li>Proporciona acceso a <code>request</code> y <code>response</code></li>
+              <li>Los handlers reciben <code>context</code> y se lo pasan al siguiente</li>
+              <li>Podemos almacenar variables utilizando <code>registry</code></li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Ejemplo de uso de registry</h2>
+
+            <pre><code class="stretch">
+  class MyHandler implements Handler {
+      void handle(Context context) {
+          // get some data
+          Map myData = ['message': "hoy es ${new Date()}"]
+          // delegates on JSON
+          context.insert(registry(myData), new ToJson())
+      }
+  }
+
+  class ToJson implements Handler {
+      void handle(Context context) {
+          def myData = context.get(LinkedHashMap.class)
+
+          context.response.contentType 'application/json'
+          context.render toJson(myData)
+      }
+  }
+            </code></pre>
+          </section>
         </section>
+
+        
 
         <section>
           <section>
@@ -522,10 +620,16 @@ Es lo más parecido a un sistema de plugins que tiene <code>Ratpack</code>.
           </section>
         </section>
 
-		<section>
-		  <h1>Q&A</h1>
-          <img class="stretch" src="gates_ballmer_pointing.gif" />
-		</section>
+        <section>
+		  <section>
+		    <h1>Q&A</h1>
+            <img class="stretch" src="gates_ballmer_pointing.gif" />
+		  </section>
+
+		  <section>
+            <img class="stretch" src="static_ballmer.jpg" />
+		  </section>
+        </section>
 
 		<section>
 		  <h1>Gracias :D</h1>
