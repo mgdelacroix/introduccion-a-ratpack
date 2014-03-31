@@ -373,81 +373,92 @@ Tener preparado un poco qué es <code>HandlerFactory</code>.
 
         <section>
           <section>
-            <h1>Testing en Ratpack</h1>
+            <h2>Inyección de dependencias con</h2>
+            <h1>Google Guice</h1>
           </section>
 
           <section>
-            <h2>Testing</h2>
+            <h2>Google Guice</h2>
+
             <ul>
-              <li>Ratpack no está ligado a ningún framework</li>
-              <li>Se recomienda usar <code>spock</code></li>
-              <li>El plugin de <code>gradle</code> prepara el proyecto para testing</li>
+              <li>Jar: <code>ratpack-guice</code></li>
+              <li>Dos usos principales</li>
+              <ul>
+                <li>Inyección de dependencias</li>
+                <li>Modularización</li>
+              </ul>
             </ul>
+
+            <aside class="notes">
+Es lo más parecido a un sistema de plugins que tiene <code>Ratpack</code>.
+            </aside>
           </section>
 
           <section>
-            <p>Ejemplo de testing</p>
-            <p>¿Maybe on demo?</p>
-          </section>
-        </section>
-
-        <section>
-          <section>
-            <h1>Desplegando Ratpack</h1>
+            <h1>Show me the code!</h1>
+            <p><a href="https://github.com/ratpack/example-ratpack-gradle-groovy-app">example-ratpack-gradle-groovy-app</a></p>
           </section>
 
           <section>
-            <h2>Facts</h2>
-            <ul>
-              <li>Las aplicaciones de Ratpack son autocontenidas</li>
-              <li>No es necesario utilizar un servidor de apliaciones</li>
-              <li>... aunque es posible a través de un plugin de <code>gradle</code></li>
-              <li>Consumo de memoria muy bajo</li>
-            </ul>
-          </section>
+            <h2>ScriptExecutionModule.groovy</h2>
 
-          <section>
-            <h2>Tareas de gradle</h2>
+            <pre><code>
+  class ScriptExecutionModule extends AbstractModule {
 
-            <pre><code class="stretch">
-  # Genera la estructura de la aplicación
-  # en build/install/$applicationName
-  gradle installApp
+      @Override
+      protected void configure() {
+          bind(ScriptExecutor).to(GroovyScriptExecutor)
+      }
 
-  # Comprime la aplicación en un fichero .zip
-  gradle distZip
-
-  # Comprime la aplicación en un fichero .tar
-  gradle distTar
+  }
             </code></pre>
+
+            <aside class="notes">
+Extendemos <code>AbstractModule</code> e indicamos en qué interfaz queremos inyectar qué clase.
+            </aside>
           </section>
 
           <section>
-            <h3>Aplicación</h3>
-            <h2>Carpeta app</h2>
+            <h2>GroovyScriptExecutor.groovy</h2>
 
-            <ul>
-              <li><code>ratpack.groovy</code> & <code>ratpack.properties</code></li>
-              <li><code>/templates</code></li>
-              <li><code>/public</code></li>
-            </ul>
+            <pre><code>
+  class GroovyScriptExecutor implements ScriptExecutor {
+
+      ScriptResult execute(String scriptText) {
+          ...
+      }
+
+  }
+            </code></pre>
+
+            <aside class="notes">
+Implementamos la clase que queremos inyectar y un método de ejemplo.
+            </aside>
           </section>
 
           <section>
-            <h3>Aplicación</h3>
-            <h2>Carpeta bin</h2>
-            <p>Scripts de <code>shell</code> y <code>batch</code> que settean el classpath y ejecutan la aplicación</p>
+            <h2>ratpack.groovy</h2>
 
-          </section>
+            <pre><code>
+  ratpack {
 
-          <section>
-            <h3>Aplicación</h3>
-            <h2>Carpeta lib</h2>
+      modules {
+          register new ScriptExecutionModule()
+      }
 
-            <ul>
-              <li>Dependencias</li>
-              <li><code>"${applicationName}.jar"</code></li>
-            </ul>
+      post("execute") { ScriptExecutor scriptExecutor ->
+          def form = parse form()
+          def script = form.script
+          render scriptExecutor.execute(script)
+      }
+
+  }
+            </code></pre>
+
+            <aside class="notes">
+La DSL de <code>Ratpack</code> soporta la declaración de módulos.<br />
+Basta con pasar nuestro módulo como parámetro a la closure para que éste esté inyectado y podamos usarlo dentro.
+            </aside>
           </section>
         </section>
 
@@ -557,38 +568,140 @@ Tener preparado un poco qué es <code>HandlerFactory</code>.
           </section>
         </section>
 
-        
-
         <section>
           <section>
-            <h2>Inyección de dependencias con</h2>
-            <h1>Google Guice</h1>
+            <h1>Testing en Ratpack</h1>
           </section>
 
           <section>
-            <h2>Google Guice</h2>
-
+            <h2>Testing</h2>
             <ul>
-              <li>Jar: <code>ratpack-guice</code></li>
-              <li>Dos usos principales</li>
+              <li>Ratpack no está ligado a ningún framework</li>
+              <li>Se recomienda usar <code>spock</code></li>
+              <li>El plugin de <code>gradle</code> prepara el proyecto para testing</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Tipos de testing</h2>
+            <br />
+            <ul>
+              <li>Unitario</li>
               <ul>
-                <li>Inyección de dependencias</li>
-                <li>Modularización</li>
+                <li><code>UnitTest.invoke()</code></li>
+                <li><code>GroovyUnitTest.invoke()</code></li>                
+              </ul>
+              <br />
+              <li>Funcional</li>
+              <ul>
+                <li><code>ApplicationUnderTest</code></li>
+                <li><code>TestHttpClient</code></li>
               </ul>
             </ul>
 
             <aside class="notes">
-Es lo más parecido a un sistema de plugins que tiene <code>Ratpack</code>.
+UnitTest.invoke() y GroovyUnitTest.invoke() nos permiten testear un handler de manera unitaria.<br />
+ApplicationUnderTest se encarga de arrancar el servidor por nosotros.<br />
+TestHttpClient es un cliente HTTP simple.
             </aside>
           </section>
 
           <section>
-            <h1>Show me the code!</h1>
-            <p>Mostrar directamente el proyecto de Luke Daley</p>
-            <p>Mejor hacer las transparencias</p>
+            <h3>Ejemplo</h3>
+            <h2>Handler</h2>
+
+            <pre><code class="stretch">
+  class MyHandler implements Handler {
+      void handle(Context context) {
+          context.with {
+              def outputHeader = request.headers.get("input-value") + ":bar"
+
+              response.headers.set("output-value", outputHeader)
+              render "received: " + request.path
+          }
+      }
+  }
+            </code></pre>
+          </section>
+
+          <section>
+            <h3>Ejemplo</h3>
+            <h2>Test</h2>
+
+            <pre><code class="stretch">
+  import static ratpack.groovy.test.GroovyUnitTest.invoke
+
+  def invocation = invoke(new MyHandler()) {
+      header "input-value", "foo"
+      uri "some/path"
+  }
+
+  assert invocation.rendered(String) == "received: some/path"
+  assert invocation.headers.get("output-value") == "foo:bar"
+            </code></pre>
           </section>
         </section>
 
+        <section>
+          <section>
+            <h1>Desplegando Ratpack</h1>
+          </section>
+
+          <section>
+            <h2>Facts</h2>
+            <ul>
+              <li>Las aplicaciones de Ratpack son autocontenidas</li>
+              <li>No es necesario utilizar un servidor de apliaciones</li>
+              <li>... aunque es posible a través de un plugin de <code>gradle</code></li>
+              <li>Consumo de memoria muy bajo</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Tareas de gradle</h2>
+
+            <pre><code class="stretch">
+  # Genera la estructura de la aplicación
+  # en build/install/$applicationName
+  gradle installApp
+
+  # Comprime la aplicación en un fichero .zip
+  gradle distZip
+
+  # Comprime la aplicación en un fichero .tar
+  gradle distTar
+            </code></pre>
+          </section>
+
+          <section>
+            <h3>Aplicación</h3>
+            <h2>Carpeta app</h2>
+
+            <ul>
+              <li><code>ratpack.groovy</code> & <code>ratpack.properties</code></li>
+              <li><code>/templates</code></li>
+              <li><code>/public</code></li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>Aplicación</h3>
+            <h2>Carpeta bin</h2>
+            <p>Scripts de <code>shell</code> y <code>batch</code> que settean el classpath y ejecutan la aplicación</p>
+
+          </section>
+
+          <section>
+            <h3>Aplicación</h3>
+            <h2>Carpeta lib</h2>
+
+            <ul>
+              <li>Dependencias</li>
+              <li><code>"${applicationName}.jar"</code></li>
+            </ul>
+          </section>
+        </section>
+        
         <section>
           <section>
             <h1>Conclusiones</h1>
