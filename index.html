@@ -189,28 +189,86 @@
           </section>
 
           <section>
-            <h2>Path tokens</h2>
+            <h2>Query params</h2>
+
+            <pre><code class="stretch">
+  get {
+      def name = context.request.queryParams.name
+      render "Hi $name!"
+  }
+            </code></pre>
+
+            <aside class="notes">
+Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValueMap<String, String>
+            </aside>
           </section>
 
           <section>
-            <h2>Query params</h2>
+            <h2>Path tokens</h2>
+
+            <pre><code class="stretch">
+  get('name/:name') {
+      def name = context.pathTokens.name
+      render "Hi $name, this time from PathTokens!"
+  }
+            </code></pre>
+
+            <aside class="notes">
+'name/:name', si visitamos '/name', falla. Hay que añadir 'name/:name?'
+            </aside>
           </section>
 
           <section>
             <h2>Métodos HTTP</h2>
+
+            <pre><code class="stretch">
+  post('name/:name?') {
+      def name = context.pathTokens.name
+      render "Hi $name, this time from PathTokens and a POST endpoint!"
+  }
+            </code></pre>
           </section>
 
           <section>
             <h2>htmlBuilder</h2>
+
+            <pre><code class="stretch">
+  get('something') {
+      render htmlBuilder {
+          head {
+              title 'Obras de Laura Pareja'
+          }
+          body {
+              h1 'La imagen solicitada no existe'
+              p {
+                  a href: '/', 'Volver al índice'
+              }
+          }
+      }
+  }
+            </code></pre>
           </section>
 
           <section>
             <h2>groovyTemplate</h2>
-            <p>Soporta handlebars</p>
+
+            <pre><code class="stretch">
+  get {
+      render groovyTemplate('template.html', ['model': 'as Map'])
+  }
+            </code></pre>
           </section>
 
           <section>
             <h2>Form</h2>
+
+            <pre><code class="stretch">
+  import static ratpack.form.Forms.form
+
+  post('myform') {
+      def form = parse form()
+  }
+            </code></pre>
             <p>Brief about parsers</p>
             <p>Uploading a file</p>
           </section>
@@ -220,6 +278,14 @@
             <p>Jackson module</p>
             <p>toJson method</p>
             <p>NON OPINIONATED \o/</p>
+          </section>
+
+          <section>
+            <h2>byMethod</h2>
+          </section>
+
+          <section>
+            <h2>Prefix</h2>
           </section>
 
           <section>
