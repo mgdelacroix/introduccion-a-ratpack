@@ -263,33 +263,81 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
             <h2>Form</h2>
 
             <pre><code class="stretch">
-  import static ratpack.form.Forms.form
+  import ratpack.form.Forms
 
   post('myform') {
-      def form = parse form()
+      def form = parse Form
+      form.get('param')
+      form.file('fileName')
   }
             </code></pre>
-            <p>Brief about parsers</p>
-            <p>Uploading a file</p>
           </section>
 
           <section>
             <h2>JSON</h2>
-            <p>Jackson module</p>
-            <p>toJson method</p>
-            <p>NON OPINIONATED \o/</p>
+            <p>Podríamos usar un módulo de <code>Guice</code> para <code>Jackson</code></p>
+            <p>En su lugar, usaremos <code>JsonOutput</code> y <code>toJson</code></p>
+
+            <br />
+
+            <pre><code class="stretch">
+  import static groovy.json.JsonOutput.toJson
+
+  get {
+      context.response.contentType 'application/json'
+      render toJson(['message': 'Long live to Json!'])
+  }
+            </code></pre>
+
+            <aside class="notes">
+Podemos usar <code>curl -i http://localhost:5050</code> para probar este endpoint.
+            </aside>
           </section>
 
           <section>
             <h2>byMethod</h2>
+
+            <pre><code class="stretch">
+  handler('myendpoint') {
+      byMethod {
+          get {
+              context.response.contentType 'application/json'
+              render toJson(['method': 'GET'])
+          }
+          post {
+              context.response.contentType 'application/json'
+              render toJson(['method': 'POST'])
+          }
+      }
+  }
+            </code></pre>
           </section>
 
           <section>
             <h2>Prefix</h2>
+
+            <pre><code class="stretch">
+  prefix('api') {
+      get('end') {
+          render 'end'
+      }
+      get('point') {
+          render 'point'
+      }
+  }
+            </code></pre>
           </section>
 
           <section>
             <h2>Assets</h2>
+
+            <pre><code class="stretch">
+  ratpack {
+      handlers {
+          assets("public")
+      }
+  }
+            </code></pre>
           </section>
         </section>
         
