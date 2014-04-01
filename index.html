@@ -435,8 +435,7 @@ Tactical Facepalm: Puede parecer una cagada pero está todo pensado :P
 
   buildscript {
       repositories {
-          maven { url "http://oss.jfrog.org/repo" }
-          mavenCentral()
+          jcenter()
       }
       dependencies {
           classpath "io.ratpack:ratpack-gradle:0.9.2"
@@ -444,8 +443,7 @@ Tactical Facepalm: Puede parecer una cagada pero está todo pensado :P
   }
 
   repositories {
-      maven { url "http://oss.jfrog.org/repo" }
-      mavenCentral()
+      jcenter()
       maven { url "http://repo.springsource.org/repo" } // for springloaded
   }
 
