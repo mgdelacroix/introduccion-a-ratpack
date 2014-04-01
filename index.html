@@ -208,12 +208,12 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
   get('something') {
       render htmlBuilder {
           head {
-              title 'Obras de Laura Pareja'
+              title 'My website title'
           }
           body {
-              h1 'La imagen solicitada no existe'
+              h1 'Hi stranger!'
               p {
-                  a href: '/', 'Volver al índice'
+                  a href: 'http://github.com', "Let's visit GitHub!"
               }
           }
       }
@@ -381,6 +381,10 @@ Podemos usar <code>curl -i http://localhost:5050</code> para probar este endpoin
 
           <section data-background="#8c4738">
             <img class="stretch" src="tactical_facepalm.jpg" />
+
+            <aside class="notes">
+Tactical Facepalm: Puede parecer una cagada pero está todo pensado :P
+            </aside>
           </section>
 
           <section data-background="#4d7e65">
