@@ -4,7 +4,7 @@ import static ratpack.groovy.Groovy.*
 ratpack {
     handlers {
         get {
-            render groovyTemplate('groovyTemplate.html', ['model': 'as Map'])
+            render groovyTemplate([name: 'John Doe'], 'testTemplate.html')
         }
     }
 }

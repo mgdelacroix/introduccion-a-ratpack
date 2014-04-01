@@ -224,10 +224,17 @@ Método <code>ratpack.http.Request.getQueryParams()</code>, retorna un MultiValu
           <section>
             <h2>groovyTemplate</h2>
 
+            <p>Handler</p>
             <pre><code class="stretch">
   get {
-      render groovyTemplate('template.html', ['model': 'as Map'])
+      render groovyTemplate([name: 'John Doe'], 'testTemplate.html')
   }
+            </code></pre>
+
+            <p>Template</p>
+            <pre><code class="stretch">
+  <h2>String que viene del modelo</h2>
+  <h1>${model.name}</h1>
             </code></pre>
           </section>
 
