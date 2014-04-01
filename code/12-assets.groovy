@@ -4,7 +4,11 @@ import static ratpack.groovy.Groovy.*
 ratpack {
     handlers {
         get {
-            render 'Point to assets'
+            render 'Standard endpoint'
         }
+        get('code') {
+            redirect '/images/code2.jpg'
+        }
+        assets 'public'
     }
 }
